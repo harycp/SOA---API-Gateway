@@ -53,22 +53,31 @@ const updateInventory = async (id, dataInventory) => {
   const inventory = await Inventory.findByPk(id);
 
   if (!inventory) {
-    return null;
+    throw new Error("Inventory not found");
   }
+
+  // if (dataInventory.quantity) {
+  //   await inventory.update({ quantity: dataInventory.quantity });
+  // }
 
   const { productId, warehouseId } = dataInventory;
 
   const product = await getProductById(productId);
   const warehouse = await getWarehouseById(warehouseId);
 
-  if (!product || !warehouse) {
-    return null;
+  if (product || warehouse) {
+    if (!product || !warehouse) {
+      throw new Error("Product or Warehouse not found");
+    }
+    await inventory.update({
+      ...dataInventory,
+      productId: product.id,
+      warehouseId: warehouse.id,
+    });
   }
 
   await inventory.update({
     ...dataInventory,
-    productId: product.id,
-    warehouseId: warehouse.id,
   });
 
   return inventory;

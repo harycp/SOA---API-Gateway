@@ -44,13 +44,9 @@ const updateInventory = async (req, res) => {
     const id = req.params.id;
     const updatedData = req.body;
     const inventory = await inventoryService.updateInventory(id, updatedData);
-    if (inventory) {
-      res
-        .status(200)
-        .json({ message: "Inventory updated successfully", data: inventory });
-    } else {
-      res.status(404).json({ message: "Inventory not found" });
-    }
+    res
+      .status(200)
+      .json({ message: "Inventory updated successfully", data: inventory });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
